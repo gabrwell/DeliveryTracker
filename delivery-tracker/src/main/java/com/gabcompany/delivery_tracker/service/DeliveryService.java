@@ -1,6 +1,7 @@
 package com.gabcompany.delivery_tracker.service;
 
 import com.gabcompany.delivery_tracker.model.Delivery;
+import com.gabcompany.delivery_tracker.repository.DeliveryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,19 +11,23 @@ import java.util.UUID;
 @Service
 public class DeliveryService {
 
-    private List<Delivery> deliveries = new ArrayList<>();
+    private final DeliveryRepository deliveryRepository;
+
+    public DeliveryService(DeliveryRepository deliveryRepository) {
+        this.deliveryRepository = deliveryRepository;
+    }
+
 
     public Delivery createDelivery(String recipient){
         String trackingCode = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
         Delivery newDelivery = new Delivery(trackingCode, recipient, "CREATED");
-        deliveries.add(newDelivery);
+        return deliveryRepository.save(newDelivery);
 
-        return newDelivery;
     }
 
     public List<Delivery> getAllDeliveries() {
-        return deliveries;
+        return deliveryRepository.findAll();
     }
 
 }

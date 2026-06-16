@@ -17,7 +17,6 @@ public class Delivery {
     public String status;
 
 
-
     public Delivery() {
 
     }
