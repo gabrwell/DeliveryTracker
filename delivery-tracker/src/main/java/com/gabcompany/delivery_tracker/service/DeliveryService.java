@@ -26,8 +26,23 @@ public class DeliveryService {
 
     }
 
+
+
     public List<Delivery> getAllDeliveries() {
         return deliveryRepository.findAll();
+    }
+
+    public Delivery getDeliveryByCode(String trackingCode) {
+        return deliveryRepository.findByTrackingCode(trackingCode)
+                .orElseThrow(() -> new RuntimeException("Entrega não encontrada com o código: " + trackingCode));
+    }
+
+    public Delivery uptadeDeliveryStatus(String trackingCode, String newStatus) {
+        Delivery delivery = getDeliveryByCode(trackingCode);
+
+        delivery.setStatus(newStatus);
+
+        return deliveryRepository.save(delivery);
     }
 
 }
