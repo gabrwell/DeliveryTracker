@@ -37,7 +37,7 @@ public class DeliveryService {
                 .orElseThrow(() -> new RuntimeException("Entrega não encontrada com o código: " + trackingCode));
     }
 
-    public Delivery uptadeDeliveryStatus(String trackingCode, String newStatus) {
+    public Delivery updateDeliveryStatus(String trackingCode, String newStatus) {
         Delivery delivery = getDeliveryByCode(trackingCode);
 
         delivery.setStatus(newStatus);
