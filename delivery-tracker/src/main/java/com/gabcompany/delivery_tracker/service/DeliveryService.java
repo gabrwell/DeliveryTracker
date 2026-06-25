@@ -1,5 +1,6 @@
 package com.gabcompany.delivery_tracker.service;
 
+import com.gabcompany.delivery_tracker.exception.DeliveryNotFoundException;
 import com.gabcompany.delivery_tracker.model.Delivery;
 import com.gabcompany.delivery_tracker.repository.DeliveryRepository;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class DeliveryService {
 
     public Delivery getDeliveryByCode(String trackingCode) {
         return deliveryRepository.findByTrackingCode(trackingCode)
-                .orElseThrow(() -> new RuntimeException("Entrega não encontrada com o código: " + trackingCode));
+                .orElseThrow(() -> new DeliveryNotFoundException("Entrega não encontrada com o código: " + trackingCode));
     }
 
     public Delivery updateDeliveryStatus(String trackingCode, String newStatus) {
