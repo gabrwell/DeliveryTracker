@@ -5,6 +5,7 @@ import com.gabcompany.delivery_tracker.dto.DeliveryRequestDto;
 import com.gabcompany.delivery_tracker.dto.DeliveryResponseDTO;
 import com.gabcompany.delivery_tracker.model.Delivery;
 import com.gabcompany.delivery_tracker.service.DeliveryService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class DeliveryController {
     }
 
     @PostMapping
-    public DeliveryResponseDTO createDelivery(@RequestBody DeliveryRequestDto request) {
+    public DeliveryResponseDTO createDelivery(@Valid @RequestBody DeliveryRequestDto request) {
         Delivery savedDelivery = deliveryService.createDelivery(request.getRecipient());
         return new DeliveryResponseDTO(savedDelivery);
     }
