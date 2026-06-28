@@ -3,6 +3,7 @@ package com.gabcompany.delivery_tracker.controller;
 
 import com.gabcompany.delivery_tracker.dto.DeliveryRequestDto;
 import com.gabcompany.delivery_tracker.dto.DeliveryResponseDTO;
+import com.gabcompany.delivery_tracker.dto.DeliveryStatusDTO;
 import com.gabcompany.delivery_tracker.model.Delivery;
 import com.gabcompany.delivery_tracker.service.DeliveryService;
 import jakarta.validation.Valid;
@@ -25,18 +26,18 @@ public class DeliveryController {
     }
 
 
-
-
-
     @GetMapping("/{trackingCode}")
     public Delivery getDeliveryByCode(@PathVariable String trackingCode) {
         return deliveryService.getDeliveryByCode(trackingCode);
     }
 
     @PatchMapping("/{trackingCode}/status")
-    public Delivery updateStatus(@PathVariable String trackingCode, @RequestBody Map<String, String> requestBody) {
-        String newStatus = requestBody.get("status");
-        return deliveryService.updateDeliveryStatus(trackingCode, newStatus);
+    public DeliveryResponseDTO updateStatus(@PathVariable String trackingCode, @Valid @RequestBody DeliveryStatusDTO requestBody) {
+
+        String newStatus = requestBody.getStatus();
+        Delivery updatedDelivery = deliveryService.updateDeliveryStatus(trackingCode, newStatus);
+
+        return new DeliveryResponseDTO(updatedDelivery);
     }
 
     @PostMapping
