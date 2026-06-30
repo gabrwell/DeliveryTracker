@@ -3,8 +3,10 @@ package com.gabcompany.delivery_tracker.service;
 import com.gabcompany.delivery_tracker.exception.DeliveryNotFoundException;
 import com.gabcompany.delivery_tracker.model.Delivery;
 import com.gabcompany.delivery_tracker.repository.DeliveryRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -29,8 +31,8 @@ public class DeliveryService {
 
 
 
-    public List<Delivery> getAllDeliveries() {
-        return deliveryRepository.findAll();
+    public Page<Delivery> getAllDeliveries(Pageable pageable) {
+        return deliveryRepository.findAll(pageable);
     }
 
     public Delivery getDeliveryByCode(String trackingCode) {

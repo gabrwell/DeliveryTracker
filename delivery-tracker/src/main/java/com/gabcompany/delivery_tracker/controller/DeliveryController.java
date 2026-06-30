@@ -7,8 +7,11 @@ import com.gabcompany.delivery_tracker.dto.DeliveryStatusDTO;
 import com.gabcompany.delivery_tracker.model.Delivery;
 import com.gabcompany.delivery_tracker.service.DeliveryService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Map;
 
@@ -47,12 +50,10 @@ public class DeliveryController {
     }
 
     @GetMapping
-    public List<DeliveryResponseDTO> getAllDeliveries() {
-        List<Delivery> deliveries = deliveryService.getAllDeliveries();
+    public Page<DeliveryResponseDTO> getAllDeliveries(@PageableDefault(size = 10, page = 0, sort = "trackingCode") Pageable pageable) {
 
-        return deliveries.stream()
-        .map(DeliveryResponseDTO::new)
-        .toList();
+        Page<Delivery> deliveriesPage = deliveryService.getAllDeliveries(pageable);
+
+        return deliveriesPage.map(DeliveryResponseDTO::new);
     }
-
 }
