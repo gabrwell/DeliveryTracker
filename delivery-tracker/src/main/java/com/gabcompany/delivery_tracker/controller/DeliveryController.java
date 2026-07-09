@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/deliveries")
+@CrossOrigin(origins = "*")
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
