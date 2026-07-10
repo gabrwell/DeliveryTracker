@@ -4,9 +4,10 @@ import com.gabcompany.delivery_tracker.exception.DeliveryNotFoundException;
 import com.gabcompany.delivery_tracker.model.Delivery;
 import com.gabcompany.delivery_tracker.repository.DeliveryRepository;
 import org.springframework.data.domain.Page;
+
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -46,6 +47,11 @@ public class DeliveryService {
         delivery.setStatus(newStatus);
 
         return deliveryRepository.save(delivery);
+    }
+
+    public Delivery getDeliveryByTrackingCode(String trackingCode) {
+        return deliveryRepository.findByTrackingCode(trackingCode)
+                .orElseThrow(() -> new RuntimeException("Delivery not found with code" + trackingCode));
     }
 
 }
