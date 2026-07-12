@@ -1,22 +1,23 @@
 package com.gabcompany.delivery_tracker.dto;
 
 import com.gabcompany.delivery_tracker.model.Delivery;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class DeliveryResponseDTO {
+public class DeliveryResponseDTO extends RepresentationModel<DeliveryResponseDTO> {
 
     private String trackingCode;
     private String recipient;
-    private String Status;
+    private String status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public DeliveryResponseDTO(Delivery delivery) {
         this.trackingCode = delivery.getTrackingCode();
         this.recipient = delivery.getRecipient();
-        Status = delivery.getStatus();
+        this.status = delivery.getStatus();
         this.createdAt = delivery.getCreateAt();
         this.updatedAt = delivery.getUpdateAt();
     }
@@ -38,6 +39,6 @@ public class DeliveryResponseDTO {
     }
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 }

@@ -1,5 +1,8 @@
 package com.gabcompany.delivery_tracker.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 
 import com.gabcompany.delivery_tracker.dto.DeliveryRequestDto;
 import com.gabcompany.delivery_tracker.dto.DeliveryResponseDTO;
@@ -30,8 +33,16 @@ public class DeliveryController {
 
 
     @GetMapping("/{trackingCode}")
-    public Delivery getDeliveryByCode(@PathVariable String trackingCode) {
-        return deliveryService.getDeliveryByCode(trackingCode);
+    public DeliveryResponseDTO getDeliveryByCode(@PathVariable String trackingCode) {
+        Delivery delivery = deliveryService.getDeliveryByCode(trackingCode);
+
+        DeliveryResponseDTO dto = new DeliveryResponseDTO(delivery);
+
+        dto.add(linkTo(methodOn(DeliveryController.class).getDeliveryByCode(trackingCode)).withSelfRel());
+
+        dto.add(linkTo(methodOn(DeliveryController.class).getAllDeliveries(null)).withRel("all_deliveries"));
+
+        return dto;
     }
 
     @PatchMapping("/{trackingCode}/status")
