@@ -4,7 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
-import com.gabcompany.delivery_tracker.dto.DeliveryRequestDto;
+import com.gabcompany.delivery_tracker.dto.DeliveryRequestDTO;
 import com.gabcompany.delivery_tracker.dto.DeliveryResponseDTO;
 import com.gabcompany.delivery_tracker.dto.DeliveryStatusDTO;
 import com.gabcompany.delivery_tracker.model.Delivery;
@@ -14,10 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.data.domain.Pageable;import java.util.List;
-import java.util.Map;
-
-import static java.util.stream.Collectors.toList;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/deliveries")
@@ -48,15 +45,15 @@ public class DeliveryController {
     @PatchMapping("/{trackingCode}/status")
     public DeliveryResponseDTO updateStatus(@PathVariable String trackingCode, @Valid @RequestBody DeliveryStatusDTO requestBody) {
 
-        String newStatus = requestBody.getStatus();
+        String newStatus = requestBody.status();
         Delivery updatedDelivery = deliveryService.updateDeliveryStatus(trackingCode, newStatus);
 
         return new DeliveryResponseDTO(updatedDelivery);
     }
 
     @PostMapping
-    public DeliveryResponseDTO createDelivery(@Valid @RequestBody DeliveryRequestDto request) {
-        Delivery savedDelivery = deliveryService.createDelivery(request.getRecipient());
+    public DeliveryResponseDTO createDelivery(@Valid @RequestBody DeliveryRequestDTO request) {
+        Delivery savedDelivery = deliveryService.createDelivery(request.recipient());
         return new DeliveryResponseDTO(savedDelivery);
     }
 
