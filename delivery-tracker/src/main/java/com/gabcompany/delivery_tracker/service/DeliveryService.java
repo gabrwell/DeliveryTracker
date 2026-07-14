@@ -37,13 +37,14 @@ public class DeliveryService {
         return deliveryRepository.findAll(pageable);
     }
 
-    public Delivery getDeliveryByCode(String trackingCode) {
+    public Delivery getDeliveryByTrackingCode(String trackingCode) {
         return deliveryRepository.findByTrackingCode(trackingCode)
-                .orElseThrow(() -> new DeliveryNotFoundException("Entrega não encontrada com o código: " + trackingCode));
+                .orElseThrow(() -> new RuntimeException("Delivery not found with code" + trackingCode));
     }
 
+
     public Delivery updateDeliveryStatus(String trackingCode, String newStatus) {
-        Delivery delivery = getDeliveryByCode(trackingCode);
+        Delivery delivery = getDeliveryByTrackingCode(trackingCode);
 
         DeliveryStatus statusEnum = DeliveryStatus.valueOf(newStatus.toUpperCase());
 
@@ -52,9 +53,5 @@ public class DeliveryService {
         return deliveryRepository.save(delivery);
     }
 
-    public Delivery getDeliveryByTrackingCode(String trackingCode) {
-        return deliveryRepository.findByTrackingCode(trackingCode)
-                .orElseThrow(() -> new RuntimeException("Delivery not found with code" + trackingCode));
-    }
 
 }

@@ -31,7 +31,7 @@ public class DeliveryController {
 
     @GetMapping("/{trackingCode}")
     public DeliveryResponseDTO getDeliveryByCode(@PathVariable String trackingCode) {
-        Delivery delivery = deliveryService.getDeliveryByCode(trackingCode);
+        Delivery delivery = deliveryService.getDeliveryByTrackingCode(trackingCode);
 
         DeliveryResponseDTO dto = new DeliveryResponseDTO(delivery);
 
