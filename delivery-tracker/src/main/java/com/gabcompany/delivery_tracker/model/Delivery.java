@@ -17,9 +17,14 @@ public class Delivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public String trackingCode;
-    public String recipient;
-    public String status;
+    @Column(nullable = false, unique = true, length = 20)
+    private String trackingCode;
+
+    @Column(nullable = false, length = 100)
+    private String recipient;
+
+    @Column(nullable = false, length = 30)
+    private String status;
 
 
     public Delivery() {
