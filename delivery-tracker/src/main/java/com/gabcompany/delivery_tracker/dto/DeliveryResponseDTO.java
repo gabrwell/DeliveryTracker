@@ -17,7 +17,7 @@ public class DeliveryResponseDTO extends RepresentationModel<DeliveryResponseDTO
     public DeliveryResponseDTO(Delivery delivery) {
         this.trackingCode = delivery.getTrackingCode();
         this.recipient = delivery.getRecipient();
-        this.status = delivery.getStatus();
+        this.status = delivery.getStatus().name();
         this.createdAt = delivery.getCreateAt();
         this.updatedAt = delivery.getUpdateAt();
     }

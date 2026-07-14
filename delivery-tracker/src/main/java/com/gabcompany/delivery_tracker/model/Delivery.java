@@ -23,15 +23,16 @@ public class Delivery {
     @Column(nullable = false, length = 100)
     private String recipient;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private String status;
+    private DeliveryStatus status;
 
 
     public Delivery() {
 
     }
 
-    public Delivery(String trackingCode, String recipient, String status) {
+    public Delivery(String trackingCode, String recipient, DeliveryStatus status) {
         this.trackingCode = trackingCode;
         this.recipient = recipient;
         this.status = status;
@@ -84,11 +85,11 @@ public class Delivery {
         this.recipient = recipient;
     }
 
-    public String getStatus() {
+    public DeliveryStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(DeliveryStatus status) {
         this.status = status;
     }
 }

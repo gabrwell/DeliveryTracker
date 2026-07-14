@@ -1,6 +1,7 @@
 package com.gabcompany.delivery_tracker.config;
 
 import com.gabcompany.delivery_tracker.model.Delivery;
+import com.gabcompany.delivery_tracker.model.DeliveryStatus;
 import com.gabcompany.delivery_tracker.repository.DeliveryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -24,17 +25,17 @@ public class DataBaseSeeder implements CommandLineRunner {
             Delivery d1 = new Delivery();
             d1.setTrackingCode("BR100200300SP");
             d1.setRecipient("Carlos Silva");
-            d1.setStatus("IN WAIT");
+            d1.setStatus(DeliveryStatus.CREATED);
 
             Delivery d2 = new Delivery();
             d2.setTrackingCode("BR900800700RJ");
             d2.setRecipient("Ana Souza");
-            d2.setStatus("IN TRANSIT");
+            d2.setStatus(DeliveryStatus.IN_TRANSIT);
 
             Delivery d3 = new Delivery();
             d3.setTrackingCode("BR555444333MG");
             d3.setRecipient("Marcos Paulo");
-            d3.setStatus("FINISHED");
+            d3.setStatus(DeliveryStatus.CREATED);
 
             deliveryRepository.saveAll(Arrays.asList(d1,d2,d3));
 

@@ -2,6 +2,7 @@ package com.gabcompany.delivery_tracker.service;
 
 import com.gabcompany.delivery_tracker.exception.DeliveryNotFoundException;
 import com.gabcompany.delivery_tracker.model.Delivery;
+import com.gabcompany.delivery_tracker.model.DeliveryStatus;
 import com.gabcompany.delivery_tracker.repository.DeliveryRepository;
 import org.springframework.data.domain.Page;
 
@@ -25,7 +26,7 @@ public class DeliveryService {
     public Delivery createDelivery(String recipient){
         String trackingCode = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
-        Delivery newDelivery = new Delivery(trackingCode, recipient, "CREATED");
+        Delivery newDelivery = new Delivery(trackingCode, recipient, DeliveryStatus.CREATED);
         return deliveryRepository.save(newDelivery);
 
     }
@@ -44,7 +45,9 @@ public class DeliveryService {
     public Delivery updateDeliveryStatus(String trackingCode, String newStatus) {
         Delivery delivery = getDeliveryByCode(trackingCode);
 
-        delivery.setStatus(newStatus);
+        DeliveryStatus statusEnum = DeliveryStatus.valueOf(newStatus.toUpperCase());
+
+        delivery.setStatus(statusEnum);
 
         return deliveryRepository.save(delivery);
     }
