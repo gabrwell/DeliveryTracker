@@ -1,9 +1,9 @@
 <div style="padding: 50px; display: flex; justify-content: center; flex-direction: column; align-items: center; gap: 20px;">
   
-  <h1>Rastreador de Entregas</h1>
+  <h1>Delivery Tracker</h1>
 
   <mat-form-field appearance="outline" style="width: 100%; max-width: 400px;">
-    <mat-label>Código de Rastreio</mat-label>
+    <mat-label>Tracking Code</mat-label>
     <input matInput placeholder="Ex: BR123">
     <button mat-icon-button matSuffix>
       <mat-icon>search</mat-icon>
@@ -12,17 +12,17 @@
 
   <mat-card style="width: 100%; max-width: 400px;">
     <mat-card-header>
-      <mat-card-title>Status: EM TRÂNSITO</mat-card-title>
-      <mat-card-subtitle>Código: BR123</mat-card-subtitle>
+      <mat-card-title>Status: IN TRANSIT</mat-card-title>
+      <mat-card-subtitle>Code: BR123</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <p style="margin-top: 15px;"><strong>Destinatário:</strong> Cliente Teste</p>
-      <p><strong>Última atualização:</strong> Hoje</p>
+      <p style="margin-top: 15px;"><strong>Recipient:</strong> Cliente Teste</p>
+      <p><strong>Last Update:</strong> Today</p>
     </mat-card-content>
   </mat-card>
 
   <mat-form-field appearance="outline" style="width: 100%; max-width: 400px;">
-    <mat-label>Código de Rastreio</mat-label>
+    <mat-label>Tracking Code</mat-label>
     
     <input matInput placeholder="Ex: BR123" [(ngModel)]="trackingCode">
     
@@ -31,6 +31,6 @@
     </button>
   </mat-form-field>
 
-  <p style="color: gray;">Você está digitando: <strong>{{ trackingCode }}</strong></p>
+  <p style="color: gray;">You are typing: <strong>{{ trackingCode }}</strong></p>
 
 </div>
