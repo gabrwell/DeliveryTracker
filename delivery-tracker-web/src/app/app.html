@@ -21,4 +21,16 @@
     </mat-card-content>
   </mat-card>
 
+  <mat-form-field appearance="outline" style="width: 100%; max-width: 400px;">
+    <mat-label>Código de Rastreio</mat-label>
+    
+    <input matInput placeholder="Ex: BR123" [(ngModel)]="trackingCode">
+    
+    <button mat-icon-button matSuffix (click)="searchDelivery()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <p style="color: gray;">Você está digitando: <strong>{{ trackingCode }}</strong></p>
+
 </div>

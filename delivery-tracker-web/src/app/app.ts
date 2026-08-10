@@ -1,8 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-// 1. Importando as peças visuais do Material Design
-import { MatCardModule } from '@angular/material/card';
+  import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,4 +24,13 @@ import { FormsModule } from '@angular/forms';
 })
 export class App {
   protected readonly title = signal('delivery-tracker-web');
+
+  trackingCode = '';
+
+
+searchDelivery() {
+    alert('The button is working! You searched for: ' + this.trackingCode);
+    console.log('Code captured in TypeScript:', this.trackingCode);
+  }
 }
+
