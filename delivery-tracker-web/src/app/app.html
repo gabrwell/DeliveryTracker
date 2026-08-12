@@ -4,8 +4,8 @@
 
   <mat-form-field appearance="outline" style="width: 100%; max-width: 400px;">
     <mat-label>Tracking Code</mat-label>
-    <input matInput placeholder="Ex: BR123">
-    <button mat-icon-button matSuffix>
+    <input matInput placeholder="Ex: BR123" [(ngModel)]="trackingCode">
+    <button mat-icon-button matSuffix (click)="searchDelivery()">
       <mat-icon>search</mat-icon>
     </button>
   </mat-form-field>
@@ -20,16 +20,6 @@
       <p><strong>Last Update:</strong> Today</p>
     </mat-card-content>
   </mat-card>
-
-  <mat-form-field appearance="outline" style="width: 100%; max-width: 400px;">
-    <mat-label>Tracking Code</mat-label>
-    
-    <input matInput placeholder="Ex: BR123" [(ngModel)]="trackingCode">
-    
-    <button mat-icon-button matSuffix (click)="searchDelivery()">
-      <mat-icon>search</mat-icon>
-    </button>
-  </mat-form-field>
 
   <p style="color: gray;">You are typing: <strong>{{ trackingCode }}</strong></p>
 
