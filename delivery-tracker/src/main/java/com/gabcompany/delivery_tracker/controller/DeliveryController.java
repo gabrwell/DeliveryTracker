@@ -18,7 +18,7 @@ import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/deliveries")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
