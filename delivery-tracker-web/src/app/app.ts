@@ -30,6 +30,32 @@ export class App {
 
   deliveryResult: any = null; 
 
+  newRecipientName = ''; 
+
+  createNewDelivery() {
+    if (!this.newRecipientName) {
+      alert('Por favor, digite o nome do destinatário!');
+      return;
+    }
+
+    this.deliveryService.createDelivery({
+      recipientName: this.newRecipientName,
+      trackingCode: '',
+      status: '',
+      lastUpdated: ''
+    }).subscribe({
+      next: (dadosDaApi: any) => {
+        alert('Entrega cadastrada com sucesso! Código gerado: ' + dadosDaApi.trackingCode);
+        console.log('Nova entrega salva no banco:', dadosDaApi);
+        this.newRecipientName = ''; // Limpa o campo após o sucesso
+      },
+      error: (erro: any) => {
+        console.error('Erro ao cadastrar entrega:', erro);
+        alert('Ocorreu um erro ao tentar cadastrar.');
+      }
+    });
+  }
+
   constructor(private deliveryService: DeliveryService) {}
 
   searchDelivery() {
@@ -43,7 +69,7 @@ export class App {
         console.log('Sucesso! Dados vindos do Java:', this.deliveryResult);
       },
       error: (erro: any) => {
-        console.error('Erro na requisição:', erro);
+        console.error('Error:', erro);
         this.deliveryResult = null;
       }
     });
