@@ -16,8 +16,10 @@ export class DeliveryService {
     return this.http.get<Delivery>(`${this.apiUrl}/${code}`);
   }
 
-  createDelivery(deliveryData: Delivery): Observable<Delivery> {
+ createDelivery(recipientName: string): Observable<any> {
+    // Montamos o JSON com o exato formato que o Java pede
+    const body = { recipient: recipientName };
     
-    return this.http.post<Delivery>(this.apiUrl, deliveryData);
+    return this.http.post<any>(this.apiUrl, body);
   }
 }

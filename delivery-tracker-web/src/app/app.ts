@@ -27,50 +27,45 @@ export class App {
   protected readonly title = signal('delivery-tracker-web');
   
   trackingCode = '';
-
   deliveryResult: any = null; 
 
   newRecipientName = ''; 
 
-  createNewDelivery() {
-    if (!this.newRecipientName) {
-      alert('Por favor, digite o nome do destinatário!');
-      return;
-    }
-
-    this.deliveryService.createDelivery({
-      recipientName: this.newRecipientName,
-      trackingCode: '',
-      status: '',
-      lastUpdated: ''
-    }).subscribe({
-      next: (dadosDaApi: any) => {
-        alert('Entrega cadastrada com sucesso! Código gerado: ' + dadosDaApi.trackingCode);
-        console.log('Nova entrega salva no banco:', dadosDaApi);
-        this.newRecipientName = ''; // Limpa o campo após o sucesso
-      },
-      error: (erro: any) => {
-        console.error('Erro ao cadastrar entrega:', erro);
-        alert('Ocorreu um erro ao tentar cadastrar.');
-      }
-    });
-  }
-
   constructor(private deliveryService: DeliveryService) {}
 
+  
   searchDelivery() {
     if (!this.trackingCode) {
       return; 
     }
 
     this.deliveryService.getDeliveryByCode(this.trackingCode).subscribe({
-      next: (dadosDaApi: any) => {
-        this.deliveryResult = dadosDaApi;
-        console.log('Sucesso! Dados vindos do Java:', this.deliveryResult);
+      next: (apiData: any) => {
+        this.deliveryResult = apiData;
+        console.log('Success! Data from Java:', this.deliveryResult);
       },
-      error: (erro: any) => {
-        console.error('Error:', erro);
+      error: (error: any) => {
+        console.error('Error:', error);
         this.deliveryResult = null;
+      }
+    });
+  }
+
+  createNewDelivery() {
+    if (!this.newRecipientName) {
+      alert('Please enter the recipient name!');
+      return;
+    }
+
+    this.deliveryService.createDelivery(this.newRecipientName).subscribe({
+      next: (apiData: any) => {
+        alert('Delivery registered successfully! Generated code: ' + apiData.trackingCode);
+        console.log('New delivery saved in the database:', apiData);
+        this.newRecipientName = ''; 
+      },
+      error: (error: any) => {
+        console.error('Error registering delivery:', error);
+        alert('An error occurred while trying to register.');
       }
     });
   }
