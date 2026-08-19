@@ -21,6 +21,23 @@
     </mat-card-content>
   </mat-card>
 
-  <p style="color: gray;">You are typing: <strong>{{ trackingCode }}</strong></p>
+  <mat-card style="width: 100%; max-width: 400px; margin-top: 20px;">
+    <mat-card-header>
+      <mat-card-title>Register New Delivery</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+      
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Recipient's Name</mat-label>
+        <input matInput placeholder="Ex: Gabriel" [(ngModel)]="newRecipientName">
+      </mat-form-field>
+      
+      <button mat-flat-button style="background-color: #3f51b5; color: white;" (click)="createNewDelivery()">
+        Register Delivery
+      </button>
+
+    </mat-card-content>
+  </mat-card>
 
 </div>
