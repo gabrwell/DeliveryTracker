@@ -39,6 +39,8 @@ export class App {
       return; 
     }
 
+    
+
     this.deliveryService.getDeliveryByCode(this.trackingCode).subscribe({
       next: (apiData: any) => {
         this.deliveryResult = apiData;
@@ -66,6 +68,22 @@ export class App {
       error: (error: any) => {
         console.error('Error registering delivery:', error);
         alert('An error occurred while trying to register.');
+      }
+    });
+  }
+
+  updateStatus(newStatus: string) {
+    if (!this.deliveryResult) return;
+
+    this.deliveryService.updateDeliveryStatus(this.deliveryResult.trackingCode, newStatus).subscribe({
+      next: (dadosAtualizados: any) => {
+        alert(`Status atualizado para ${newStatus} com sucesso!`);
+        // Isso atualiza a tela na hora com o novo status vindo do Java
+        this.deliveryResult = dadosAtualizados; 
+      },
+      error: (erro: any) => {
+        console.error('Erro ao atualizar status:', erro);
+        alert('Ocorreu um erro ao tentar atualizar o status.');
       }
     });
   }
