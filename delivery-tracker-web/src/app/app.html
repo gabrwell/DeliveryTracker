@@ -37,7 +37,6 @@
         Register Delivery
       </button>
 
-      <!-- Cartão de resultado (Agora dinâmico usando o @if do Angular) -->
   @if (deliveryResult) {
     <mat-card style="width: 100%; max-width: 400px; margin-top: 20px;">
       <mat-card-header>
@@ -46,16 +45,15 @@
       </mat-card-header>
       
       <mat-card-content>
-        <p style="margin-top: 15px;"><strong>Destinatário:</strong> {{ deliveryResult.recipient }}</p>
+        <p style="margin-top: 15px;"><strong>Recipient:</strong> {{ deliveryResult.recipient }}</p>
       </mat-card-content>
 
-      <!-- Botões para alterar o status -->
       <mat-card-actions style="display: flex; gap: 10px; padding: 16px;">
         <button mat-stroked-button style="color: #ff9800; border-color: #ff9800;" (click)="updateStatus('IN_TRANSIT')">
-          Em Trânsito
+          In Transit
         </button>
         <button mat-flat-button style="background-color: #4caf50; color: white;" (click)="updateStatus('DELIVERED')">
-          Entregue
+          Delivered
         </button>
       </mat-card-actions>
     </mat-card>

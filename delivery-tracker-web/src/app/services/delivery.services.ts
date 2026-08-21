@@ -17,7 +17,6 @@ export class DeliveryService {
   }
 
  createDelivery(recipientName: string): Observable<any> {
-    // Montamos o JSON com o exato formato que o Java pede
     const body = { recipient: recipientName };
     
     return this.http.post<any>(this.apiUrl, body);
