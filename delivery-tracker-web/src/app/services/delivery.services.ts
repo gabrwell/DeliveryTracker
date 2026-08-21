@@ -22,4 +22,10 @@ export class DeliveryService {
     
     return this.http.post<any>(this.apiUrl, body);
   }
+
+  updateDeliveryStatus(code: string, newStatus: string): Observable<any> {
+    const body = { status: newStatus }; 
+    
+    return this.http.patch<any>(`${this.apiUrl}/${code}/status`, body);
+  }
 }
