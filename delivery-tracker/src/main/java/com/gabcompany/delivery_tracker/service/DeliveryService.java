@@ -48,6 +48,10 @@ public class DeliveryService {
 
         DeliveryStatus statusEnum = DeliveryStatus.valueOf(newStatus.toUpperCase());
 
+        if (statusEnum == DeliveryStatus.DELIVERED) {
+            delivery.setDeliveredAt(java.time.LocalDateTime.now());
+        }
+
         delivery.setStatus(statusEnum);
 
         return deliveryRepository.save(delivery);

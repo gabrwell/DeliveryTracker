@@ -27,6 +27,9 @@ public class Delivery {
     @Column(nullable = false, length = 30)
     private DeliveryStatus status;
 
+    @Column(name = "delivered_at")
+    private LocalDateTime deliveredAt;
+
 
     public Delivery() {
 
@@ -91,5 +94,13 @@ public class Delivery {
 
     public void setStatus(DeliveryStatus status) {
         this.status = status;
+    }
+
+    public LocalDateTime getDeliveredAt() {
+        return deliveredAt;
+    }
+
+    public void setDeliveredAt(LocalDateTime deliveredAt) {
+        this.deliveredAt = deliveredAt;
     }
 }

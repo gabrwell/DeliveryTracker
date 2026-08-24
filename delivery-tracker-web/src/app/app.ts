@@ -77,13 +77,12 @@ export class App {
 
     this.deliveryService.updateDeliveryStatus(this.deliveryResult.trackingCode, newStatus).subscribe({
       next: (dadosAtualizados: any) => {
-        alert(`Status atualizado para ${newStatus} com sucesso!`);
-        // Isso atualiza a tela na hora com o novo status vindo do Java
+        alert(`Status updated to ${newStatus} successfully!`);
         this.deliveryResult = dadosAtualizados; 
       },
       error: (erro: any) => {
-        console.error('Erro ao atualizar status:', erro);
-        alert('Ocorreu um erro ao tentar atualizar o status.');
+        console.error('Error updating status:', erro);
+        alert('An error occurred while trying to update the status.');
       }
     });
   }
