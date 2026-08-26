@@ -1,16 +1,15 @@
 package com.gabcompany.delivery_tracker.service;
 
 import com.gabcompany.delivery_tracker.exception.DeliveryNotFoundException;
+import com.gabcompany.delivery_tracker.exception.InvalidDeliveryStatusException;
 import com.gabcompany.delivery_tracker.model.Delivery;
 import com.gabcompany.delivery_tracker.model.DeliveryStatus;
 import com.gabcompany.delivery_tracker.repository.DeliveryRepository;
 import org.springframework.data.domain.Page;
-
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import org.springframework.data.domain.Pageable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -39,14 +38,14 @@ public class DeliveryService {
 
     public Delivery getDeliveryByTrackingCode(String trackingCode) {
         return deliveryRepository.findByTrackingCode(trackingCode)
-                .orElseThrow(() -> new RuntimeException("Delivery not found with code" + trackingCode));
+                .orElseThrow(() -> new DeliveryNotFoundException(
+                        "Delivery not found with tracking code: " + trackingCode));
     }
 
 
     public Delivery updateDeliveryStatus(String trackingCode, String newStatus) {
         Delivery delivery = getDeliveryByTrackingCode(trackingCode);
-
-        DeliveryStatus statusEnum = DeliveryStatus.valueOf(newStatus.toUpperCase());
+        DeliveryStatus statusEnum = parseStatus(newStatus);
 
         if (statusEnum == DeliveryStatus.DELIVERED) {
             delivery.setDeliveredAt(java.time.LocalDateTime.now());
@@ -57,5 +56,16 @@ public class DeliveryService {
         return deliveryRepository.save(delivery);
     }
 
+    private DeliveryStatus parseStatus(String status) {
+        if (status == null || status.isBlank()) {
+            throw new InvalidDeliveryStatusException(status);
+        }
+
+        try {
+            return DeliveryStatus.valueOf(status.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException exception) {
+            throw new InvalidDeliveryStatusException(status);
+        }
+    }
 
 }
