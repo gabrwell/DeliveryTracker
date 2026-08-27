@@ -1,65 +1,71 @@
-<div style="padding: 50px; display: flex; justify-content: center; flex-direction: column; align-items: center; gap: 20px;">
-  
+<div
+  style="
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  "
+>
   <h1>Delivery Tracker</h1>
 
-  <mat-form-field appearance="outline" style="width: 100%; max-width: 400px;">
+  <mat-form-field appearance="outline" style="width: 100%; max-width: 400px">
     <mat-label>Tracking Code</mat-label>
-    <input matInput placeholder="Ex: BR123" [(ngModel)]="trackingCode">
+    <input matInput placeholder="Ex: BR123" [(ngModel)]="trackingCode" />
     <button mat-icon-button matSuffix (click)="searchDelivery()">
       <mat-icon>search</mat-icon>
     </button>
   </mat-form-field>
 
-  <mat-card style="width: 100%; max-width: 400px;">
-    <mat-card-header>
-      <mat-card-title>Status: IN TRANSIT</mat-card-title>
-      <mat-card-subtitle>Code: BR123</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <p style="margin-top: 15px;"><strong>Recipient:</strong> Cliente Teste</p>
-      <p><strong>Last Update:</strong> Today</p>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card style="width: 100%; max-width: 400px; margin-top: 20px;">
+  <mat-card style="width: 100%; max-width: 400px; margin-top: 20px">
     <mat-card-header>
       <mat-card-title>Register New Delivery</mat-card-title>
     </mat-card-header>
-    
-    <mat-card-content style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
-      
-      <mat-form-field appearance="outline" style="width: 100%;">
+
+    <mat-card-content style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px">
+      <mat-form-field appearance="outline" style="width: 100%">
         <mat-label>Recipient's Name</mat-label>
-        <input matInput placeholder="Ex: Gabriel" [(ngModel)]="newRecipientName">
+        <input matInput placeholder="Ex: Gabriel" [(ngModel)]="newRecipientName" />
       </mat-form-field>
-      
-      <button mat-flat-button style="background-color: #3f51b5; color: white;" (click)="createNewDelivery()">
+
+      <button
+        mat-flat-button
+        style="background-color: #3f51b5; color: white"
+        (click)="createNewDelivery()"
+      >
         Register Delivery
       </button>
+    </mat-card-content>
+  </mat-card>
 
   @if (deliveryResult) {
-    <mat-card style="width: 100%; max-width: 400px; margin-top: 20px;">
+    <mat-card style="width: 100%; max-width: 400px; margin-top: 20px">
       <mat-card-header>
         <mat-card-title>Status: {{ deliveryResult.status }}</mat-card-title>
         <mat-card-subtitle>Code: {{ deliveryResult.trackingCode }}</mat-card-subtitle>
       </mat-card-header>
-      
+
       <mat-card-content>
-        <p style="margin-top: 15px;"><strong>Recipient:</strong> {{ deliveryResult.recipient }}</p>
+        <p style="margin-top: 15px"><strong>Recipient:</strong> {{ deliveryResult.recipient }}</p>
       </mat-card-content>
 
-      <mat-card-actions style="display: flex; gap: 10px; padding: 16px;">
-        <button mat-stroked-button style="color: #ff9800; border-color: #ff9800;" (click)="updateStatus('IN_TRANSIT')">
+      <mat-card-actions style="display: flex; gap: 10px; padding: 16px">
+        <button
+          mat-stroked-button
+          style="color: #ff9800; border-color: #ff9800"
+          (click)="updateStatus('IN_TRANSIT')"
+        >
           In Transit
         </button>
-        <button mat-flat-button style="background-color: #4caf50; color: white;" (click)="updateStatus('DELIVERED')">
+        <button
+          mat-flat-button
+          style="background-color: #4caf50; color: white"
+          (click)="updateStatus('DELIVERED')"
+        >
           Delivered
         </button>
       </mat-card-actions>
     </mat-card>
   }
-
-    </mat-card-content>
-  </mat-card>
-
 </div>

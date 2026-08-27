@@ -1,6 +1,11 @@
+export type DeliveryStatus = 'CREATED' | 'IN_TRANSIT' | 'DELIVERED' | 'CANCELED';
+
 export interface Delivery {
-    trackingCode: string;
-    status: string;
-    recipientName: string;
-    lastUpdated: string;
+  trackingCode: string;
+  recipient: string;
+  status: DeliveryStatus;
+  createdAt: string | null;
+  updatedAt: string | null;
+  deliveredAt: string | null;
+  returnDeadline: string | null;
 }

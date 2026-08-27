@@ -1,5 +1,4 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -7,49 +6,46 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 
-import { DeliveryService } from './services/delivery.services'; 
+import { DeliveryService } from './services/delivery.services';
+import { Delivery, DeliveryStatus } from './delivery.model';
 
 @Component({
   selector: 'app-root',
   imports: [
-    RouterOutlet,
     MatCardModule,
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('delivery-tracker-web');
-  
-  trackingCode = '';
-  deliveryResult: any = null; 
 
-  newRecipientName = ''; 
+  trackingCode = '';
+  deliveryResult: Delivery | null = null;
+
+  newRecipientName = '';
 
   constructor(private deliveryService: DeliveryService) {}
 
-  
   searchDelivery() {
     if (!this.trackingCode) {
-      return; 
+      return;
     }
 
-    
-
     this.deliveryService.getDeliveryByCode(this.trackingCode).subscribe({
-      next: (apiData: any) => {
+      next: (apiData) => {
         this.deliveryResult = apiData;
         console.log('Success! Data from Java:', this.deliveryResult);
       },
-      error: (error: any) => {
+      error: (error: unknown) => {
         console.error('Error:', error);
         this.deliveryResult = null;
-      }
+      },
     });
   }
 
@@ -60,30 +56,32 @@ export class App {
     }
 
     this.deliveryService.createDelivery(this.newRecipientName).subscribe({
-      next: (apiData: any) => {
+      next: (apiData) => {
         alert('Delivery registered successfully! Generated code: ' + apiData.trackingCode);
         console.log('New delivery saved in the database:', apiData);
-        this.newRecipientName = ''; 
+        this.newRecipientName = '';
       },
-      error: (error: any) => {
+      error: (error: unknown) => {
         console.error('Error registering delivery:', error);
         alert('An error occurred while trying to register.');
-      }
+      },
     });
   }
 
-  updateStatus(newStatus: string) {
+  updateStatus(newStatus: DeliveryStatus) {
     if (!this.deliveryResult) return;
 
-    this.deliveryService.updateDeliveryStatus(this.deliveryResult.trackingCode, newStatus).subscribe({
-      next: (dadosAtualizados: any) => {
-        alert(`Status updated to ${newStatus} successfully!`);
-        this.deliveryResult = dadosAtualizados; 
-      },
-      error: (erro: any) => {
-        console.error('Error updating status:', erro);
-        alert('An error occurred while trying to update the status.');
-      }
-    });
+    this.deliveryService
+      .updateDeliveryStatus(this.deliveryResult.trackingCode, newStatus)
+      .subscribe({
+        next: (dadosAtualizados) => {
+          alert(`Status updated to ${newStatus} successfully!`);
+          this.deliveryResult = dadosAtualizados;
+        },
+        error: (erro: unknown) => {
+          console.error('Error updating status:', erro);
+          alert('An error occurred while trying to update the status.');
+        },
+      });
   }
 }
