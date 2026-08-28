@@ -42,10 +42,11 @@ public class Delivery {
     }
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createAt;
 
     @LastModifiedDate
+    @Column(nullable = false)
     private LocalDateTime updateAt;
 
     public LocalDateTime getCreateAt() {
