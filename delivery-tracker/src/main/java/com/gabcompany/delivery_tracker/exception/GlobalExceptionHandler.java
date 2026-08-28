@@ -26,6 +26,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(InvalidStatusTransitionException.class)
+    public ResponseEntity<StandardError> handleInvalidStatusTransition(InvalidStatusTransitionException ex) {
+        StandardError error = new StandardError(HttpStatus.CONFLICT.value(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleGenericException(Exception ex) {
         ex.printStackTrace();

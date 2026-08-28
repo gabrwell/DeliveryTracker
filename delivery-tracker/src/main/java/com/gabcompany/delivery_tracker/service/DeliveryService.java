@@ -25,7 +25,7 @@ public class DeliveryService {
     public Delivery createDelivery(String recipient){
         String trackingCode = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
-        Delivery newDelivery = new Delivery(trackingCode, recipient, DeliveryStatus.CREATED);
+        Delivery newDelivery = new Delivery(trackingCode, recipient);
         return deliveryRepository.save(newDelivery);
 
     }
@@ -47,11 +47,10 @@ public class DeliveryService {
         Delivery delivery = getDeliveryByTrackingCode(trackingCode);
         DeliveryStatus statusEnum = parseStatus(newStatus);
 
-        if (statusEnum == DeliveryStatus.DELIVERED) {
-            delivery.setDeliveredAt(java.time.LocalDateTime.now());
+        boolean changed = delivery.changeStatus(statusEnum);
+        if (!changed) {
+            return delivery;
         }
-
-        delivery.setStatus(statusEnum);
 
         return deliveryRepository.save(delivery);
     }

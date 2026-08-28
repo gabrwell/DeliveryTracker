@@ -1,5 +1,6 @@
 package com.gabcompany.delivery_tracker.exception;
 
+import com.gabcompany.delivery_tracker.model.DeliveryStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,20 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(400, response.getBody().getStatus());
+        assertEquals(exception.getMessage(), response.getBody().getMessage());
+    }
+
+    @Test
+    void shouldReturnConflictWhenStatusTransitionIsInvalid() {
+        InvalidStatusTransitionException exception = new InvalidStatusTransitionException(
+                DeliveryStatus.CREATED,
+                DeliveryStatus.DELIVERED);
+
+        ResponseEntity<StandardError> response = handler.handleInvalidStatusTransition(exception);
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(409, response.getBody().getStatus());
         assertEquals(exception.getMessage(), response.getBody().getMessage());
     }
 }
