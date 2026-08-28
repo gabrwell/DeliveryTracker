@@ -40,6 +40,9 @@ cd delivery-tracker
 
 A API estará disponível em `http://localhost:8080/deliveries`.
 
+Se o banco já foi utilizado por uma versão anterior do projeto, defina
+`$env:FLYWAY_BASELINE_ON_MIGRATE = "true"` somente na primeira inicialização com Flyway.
+
 ### 3. Inicie o frontend
 
 Em outro terminal:
