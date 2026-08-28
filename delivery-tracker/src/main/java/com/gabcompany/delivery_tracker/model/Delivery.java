@@ -1,12 +1,11 @@
 package com.gabcompany.delivery_tracker.model;
 
+import com.gabcompany.delivery_tracker.exception.InvalidStatusTransitionException;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,14 +30,14 @@ public class Delivery {
     private LocalDateTime deliveredAt;
 
 
-    public Delivery() {
+    protected Delivery() {
 
     }
 
-    public Delivery(String trackingCode, String recipient, DeliveryStatus status) {
+    public Delivery(String trackingCode, String recipient) {
         this.trackingCode = trackingCode;
         this.recipient = recipient;
-        this.status = status;
+        this.status = DeliveryStatus.CREATED;
     }
 
     @CreatedDate
@@ -93,15 +92,39 @@ public class Delivery {
         return status;
     }
 
-    public void setStatus(DeliveryStatus status) {
-        this.status = status;
+    public boolean changeStatus(DeliveryStatus newStatus) {
+        if (newStatus == null) {
+            throw new IllegalArgumentException("New delivery status must not be null.");
+        }
+
+        if (status == newStatus) {
+            return false;
+        }
+
+        if (!canTransitionTo(newStatus)) {
+            throw new InvalidStatusTransitionException(status, newStatus);
+        }
+
+        status = newStatus;
+        if (newStatus == DeliveryStatus.DELIVERED) {
+            deliveredAt = LocalDateTime.now();
+        }
+
+        return true;
+    }
+
+    private boolean canTransitionTo(DeliveryStatus newStatus) {
+        return switch (status) {
+            case CREATED -> newStatus == DeliveryStatus.IN_TRANSIT
+                    || newStatus == DeliveryStatus.CANCELED;
+            case IN_TRANSIT -> newStatus == DeliveryStatus.DELIVERED
+                    || newStatus == DeliveryStatus.CANCELED;
+            case DELIVERED, CANCELED -> false;
+        };
     }
 
     public LocalDateTime getDeliveredAt() {
         return deliveredAt;
     }
 
-    public void setDeliveredAt(LocalDateTime deliveredAt) {
-        this.deliveredAt = deliveredAt;
-    }
 }

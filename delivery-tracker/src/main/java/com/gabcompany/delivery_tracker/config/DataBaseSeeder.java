@@ -7,7 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @Profile("dev")
@@ -24,22 +24,12 @@ public class DataBaseSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         if (deliveryRepository.count() == 0) {
-            Delivery d1 = new Delivery();
-            d1.setTrackingCode("BR100200300SP");
-            d1.setRecipient("Carlos Silva");
-            d1.setStatus(DeliveryStatus.CREATED);
+            Delivery d1 = new Delivery("BR100200300SP", "Carlos Silva");
+            Delivery d2 = new Delivery("BR900800700RJ", "Ana Souza");
+            d2.changeStatus(DeliveryStatus.IN_TRANSIT);
+            Delivery d3 = new Delivery("BR555444333MG", "Marcos Paulo");
 
-            Delivery d2 = new Delivery();
-            d2.setTrackingCode("BR900800700RJ");
-            d2.setRecipient("Ana Souza");
-            d2.setStatus(DeliveryStatus.IN_TRANSIT);
-
-            Delivery d3 = new Delivery();
-            d3.setTrackingCode("BR555444333MG");
-            d3.setRecipient("Marcos Paulo");
-            d3.setStatus(DeliveryStatus.CREATED);
-
-            deliveryRepository.saveAll(Arrays.asList(d1,d2,d3));
+            deliveryRepository.saveAll(List.of(d1, d2, d3));
 
             System.out.println("Initial load of successfully completed deliveries");
         }
