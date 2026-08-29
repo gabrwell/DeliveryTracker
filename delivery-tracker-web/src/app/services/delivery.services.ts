@@ -1,8 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Delivery } from '../delivery.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import {
+  CreateDeliveryRequest,
+  Delivery,
+  DeliveryStatus,
+  UpdateDeliveryStatusRequest,
+} from '../models/delivery.model';
+import { PageResponse } from '../models/page.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,19 +19,32 @@ export class DeliveryService {
   constructor(private http: HttpClient) {}
 
   getDeliveryByCode(code: string): Observable<Delivery> {
-    const normalizedCode = encodeURIComponent(code.trim().toUpperCase());
+    const normalizedCode = this.normalizeTrackingCode(code);
     return this.http.get<Delivery>(`${this.apiUrl}/${normalizedCode}`);
   }
 
   createDelivery(recipientName: string): Observable<Delivery> {
-    const body = { recipient: recipientName };
+    const body: CreateDeliveryRequest = { recipient: recipientName };
 
     return this.http.post<Delivery>(this.apiUrl, body);
   }
 
-  updateDeliveryStatus(code: string, newStatus: string): Observable<Delivery> {
-    const body = { status: newStatus };
+  updateDeliveryStatus(code: string, newStatus: DeliveryStatus): Observable<Delivery> {
+    const body: UpdateDeliveryStatusRequest = { status: newStatus };
 
-    return this.http.patch<Delivery>(`${this.apiUrl}/${encodeURIComponent(code)}/status`, body);
+    return this.http.patch<Delivery>(
+      `${this.apiUrl}/${this.normalizeTrackingCode(code)}/status`,
+      body,
+    );
+  }
+
+  getAllDeliveries(page = 0, size = 10): Observable<PageResponse<Delivery>> {
+    const params = new HttpParams().set('page', page).set('size', size);
+
+    return this.http.get<PageResponse<Delivery>>(this.apiUrl, { params });
+  }
+
+  private normalizeTrackingCode(code: string): string {
+    return encodeURIComponent(code.trim().toUpperCase());
   }
 }

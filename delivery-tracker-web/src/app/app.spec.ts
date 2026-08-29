@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { App } from './app';
-import { Delivery, DeliveryStatus } from './delivery.model';
+import { Delivery, DeliveryStatus } from './models/delivery.model';
 import { DeliveryService } from './services/delivery.services';
 
 describe('App', () => {
@@ -81,6 +81,8 @@ describe('App', () => {
           new HttpErrorResponse({
             status: 409,
             error: {
+              timestamp: '2026-08-29T10:00:00',
+              status: 409,
               message: 'Cannot change delivery status from CREATED to DELIVERED.',
             },
           }),
