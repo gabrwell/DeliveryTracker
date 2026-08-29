@@ -8,7 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { DeliveryService } from './services/delivery.services';
-import { Delivery, DeliveryStatus } from './delivery.model';
+import { isApiError } from './models/api.model';
+import { Delivery, DeliveryStatus } from './models/delivery.model';
 
 @Component({
   selector: 'app-root',
@@ -100,12 +101,7 @@ export class App {
   private getErrorMessage(error: HttpErrorResponse): string {
     const responseBody: unknown = error.error;
 
-    if (
-      typeof responseBody === 'object' &&
-      responseBody !== null &&
-      'message' in responseBody &&
-      typeof responseBody.message === 'string'
-    ) {
+    if (isApiError(responseBody)) {
       return responseBody.message;
     }
 
