@@ -48,24 +48,41 @@
 
       <mat-card-content>
         <p style="margin-top: 15px"><strong>Recipient:</strong> {{ deliveryResult.recipient }}</p>
+
+        @if (statusTransitionError) {
+          <p class="status-error" role="alert">{{ statusTransitionError }}</p>
+        }
+
+        @if (deliveryResult.status === 'DELIVERED' || deliveryResult.status === 'CANCELED') {
+          <p class="final-status-message">This delivery has reached a final status.</p>
+        }
       </mat-card-content>
 
-      <mat-card-actions style="display: flex; gap: 10px; padding: 16px">
-        <button
-          mat-stroked-button
-          style="color: #ff9800; border-color: #ff9800"
-          (click)="updateStatus('IN_TRANSIT')"
-        >
-          In Transit
-        </button>
-        <button
-          mat-flat-button
-          style="background-color: #4caf50; color: white"
-          (click)="updateStatus('DELIVERED')"
-        >
-          Delivered
-        </button>
-      </mat-card-actions>
+      @if (deliveryResult.status === 'CREATED' || deliveryResult.status === 'IN_TRANSIT') {
+        <mat-card-actions style="display: flex; gap: 10px; padding: 16px">
+          @if (deliveryResult.status === 'CREATED') {
+            <button
+              mat-stroked-button
+              style="color: #ff9800; border-color: #ff9800"
+              (click)="updateStatus('IN_TRANSIT')"
+            >
+              In Transit
+            </button>
+          }
+
+          @if (deliveryResult.status === 'IN_TRANSIT') {
+            <button
+              mat-flat-button
+              style="background-color: #4caf50; color: white"
+              (click)="updateStatus('DELIVERED')"
+            >
+              Delivered
+            </button>
+          }
+
+          <button mat-stroked-button color="warn" (click)="updateStatus('CANCELED')">Cancel</button>
+        </mat-card-actions>
+      }
     </mat-card>
   }
 </div>

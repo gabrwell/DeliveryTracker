@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { DeliveryService } from './services/delivery.services';
 import { Delivery, DeliveryStatus } from './delivery.model';
@@ -27,6 +28,7 @@ export class App {
 
   trackingCode = '';
   deliveryResult: Delivery | null = null;
+  statusTransitionError = '';
 
   newRecipientName = '';
 
@@ -36,6 +38,8 @@ export class App {
     if (!this.trackingCode) {
       return;
     }
+
+    this.statusTransitionError = '';
 
     this.deliveryService.getDeliveryByCode(this.trackingCode).subscribe({
       next: (apiData) => {
@@ -71,6 +75,8 @@ export class App {
   updateStatus(newStatus: DeliveryStatus) {
     if (!this.deliveryResult) return;
 
+    this.statusTransitionError = '';
+
     this.deliveryService
       .updateDeliveryStatus(this.deliveryResult.trackingCode, newStatus)
       .subscribe({
@@ -78,10 +84,31 @@ export class App {
           alert(`Status updated to ${newStatus} successfully!`);
           this.deliveryResult = dadosAtualizados;
         },
-        error: (erro: unknown) => {
-          console.error('Error updating status:', erro);
+        error: (error: HttpErrorResponse) => {
+          console.error('Error updating status:', error);
+
+          if (error.status === 409) {
+            this.statusTransitionError = this.getErrorMessage(error);
+            return;
+          }
+
           alert('An error occurred while trying to update the status.');
         },
       });
+  }
+
+  private getErrorMessage(error: HttpErrorResponse): string {
+    const responseBody: unknown = error.error;
+
+    if (
+      typeof responseBody === 'object' &&
+      responseBody !== null &&
+      'message' in responseBody &&
+      typeof responseBody.message === 'string'
+    ) {
+      return responseBody.message;
+    }
+
+    return 'This status transition is not allowed.';
   }
 }
