@@ -12,9 +12,19 @@
 
   <mat-form-field appearance="outline" style="width: 100%; max-width: 400px">
     <mat-label>Tracking Code</mat-label>
-    <input matInput placeholder="Ex: BR123" [(ngModel)]="trackingCode" />
-    <button mat-icon-button matSuffix (click)="searchDelivery()">
-      <mat-icon>search</mat-icon>
+    <input matInput placeholder="Ex: BR123" [(ngModel)]="trackingCode" [disabled]="isSearching()" />
+    <button
+      mat-icon-button
+      matSuffix
+      aria-label="Search delivery"
+      [disabled]="isSearching()"
+      (click)="searchDelivery()"
+    >
+      @if (isSearching()) {
+        <mat-spinner diameter="22" aria-label="Searching delivery" />
+      } @else {
+        <mat-icon>search</mat-icon>
+      }
     </button>
   </mat-form-field>
 
@@ -26,15 +36,28 @@
     <mat-card-content style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px">
       <mat-form-field appearance="outline" style="width: 100%">
         <mat-label>Recipient's Name</mat-label>
-        <input matInput placeholder="Ex: Gabriel" [(ngModel)]="newRecipientName" />
+        <input
+          matInput
+          placeholder="Ex: Gabriel"
+          [(ngModel)]="newRecipientName"
+          [disabled]="isCreating()"
+        />
       </mat-form-field>
 
       <button
         mat-flat-button
         style="background-color: #3f51b5; color: white"
+        [disabled]="isCreating()"
         (click)="createNewDelivery()"
       >
-        Register Delivery
+        <span class="button-content">
+          @if (isCreating()) {
+            <mat-spinner diameter="20" />
+            Registering...
+          } @else {
+            Register Delivery
+          }
+        </span>
       </button>
     </mat-card-content>
   </mat-card>
@@ -64,9 +87,15 @@
             <button
               mat-stroked-button
               style="color: #ff9800; border-color: #ff9800"
+              [disabled]="statusBeingUpdated() !== null"
               (click)="updateStatus('IN_TRANSIT')"
             >
-              In Transit
+              <span class="button-content">
+                @if (statusBeingUpdated() === 'IN_TRANSIT') {
+                  <mat-spinner diameter="18" />
+                }
+                In Transit
+              </span>
             </button>
           }
 
@@ -74,13 +103,31 @@
             <button
               mat-flat-button
               style="background-color: #4caf50; color: white"
+              [disabled]="statusBeingUpdated() !== null"
               (click)="updateStatus('DELIVERED')"
             >
-              Delivered
+              <span class="button-content">
+                @if (statusBeingUpdated() === 'DELIVERED') {
+                  <mat-spinner diameter="18" />
+                }
+                Delivered
+              </span>
             </button>
           }
 
-          <button mat-stroked-button color="warn" (click)="updateStatus('CANCELED')">Cancel</button>
+          <button
+            mat-stroked-button
+            color="warn"
+            [disabled]="statusBeingUpdated() !== null"
+            (click)="updateStatus('CANCELED')"
+          >
+            <span class="button-content">
+              @if (statusBeingUpdated() === 'CANCELED') {
+                <mat-spinner diameter="18" />
+              }
+              Cancel
+            </span>
+          </button>
         </mat-card-actions>
       }
     </mat-card>

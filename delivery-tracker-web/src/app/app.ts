@@ -4,10 +4,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs';
 
 import { DeliveryService } from './services/delivery.services';
+import { NotificationService } from './services/notification.service';
 import { isApiError } from './models/api.model';
 import { Delivery, DeliveryStatus } from './models/delivery.model';
 
@@ -19,6 +23,8 @@ import { Delivery, DeliveryStatus } from './models/delivery.model';
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
     FormsModule,
   ],
   templateUrl: './app.html',
@@ -30,81 +36,115 @@ export class App {
   trackingCode = '';
   deliveryResult: Delivery | null = null;
   statusTransitionError = '';
-
   newRecipientName = '';
 
-  constructor(private deliveryService: DeliveryService) {}
+  readonly isSearching = signal(false);
+  readonly isCreating = signal(false);
+  readonly statusBeingUpdated = signal<DeliveryStatus | null>(null);
+
+  constructor(
+    private deliveryService: DeliveryService,
+    private notificationService: NotificationService,
+  ) {}
 
   searchDelivery() {
-    if (!this.trackingCode) {
+    if (!this.trackingCode.trim()) {
+      this.showNotification('Please enter a tracking code.');
       return;
     }
 
     this.statusTransitionError = '';
+    this.deliveryResult = null;
+    this.isSearching.set(true);
 
-    this.deliveryService.getDeliveryByCode(this.trackingCode).subscribe({
-      next: (apiData) => {
-        this.deliveryResult = apiData;
-        console.log('Success! Data from Java:', this.deliveryResult);
-      },
-      error: (error: unknown) => {
-        console.error('Error:', error);
-        this.deliveryResult = null;
-      },
-    });
+    this.deliveryService
+      .getDeliveryByCode(this.trackingCode)
+      .pipe(finalize(() => this.isSearching.set(false)))
+      .subscribe({
+        next: (apiData) => {
+          this.deliveryResult = apiData;
+        },
+        error: (error: unknown) => {
+          this.showError(error, 'An error occurred while searching for the delivery.');
+        },
+      });
   }
 
   createNewDelivery() {
-    if (!this.newRecipientName) {
-      alert('Please enter the recipient name!');
+    const recipientName = this.newRecipientName.trim();
+
+    if (!recipientName) {
+      this.showNotification('Please enter the recipient name.');
       return;
     }
 
-    this.deliveryService.createDelivery(this.newRecipientName).subscribe({
-      next: (apiData) => {
-        alert('Delivery registered successfully! Generated code: ' + apiData.trackingCode);
-        console.log('New delivery saved in the database:', apiData);
-        this.newRecipientName = '';
-      },
-      error: (error: unknown) => {
-        console.error('Error registering delivery:', error);
-        alert('An error occurred while trying to register.');
-      },
-    });
+    this.isCreating.set(true);
+
+    this.deliveryService
+      .createDelivery(recipientName)
+      .pipe(finalize(() => this.isCreating.set(false)))
+      .subscribe({
+        next: (apiData) => {
+          this.showNotification(
+            `Delivery registered successfully! Generated code: ${apiData.trackingCode}`,
+          );
+          this.newRecipientName = '';
+        },
+        error: (error: unknown) => {
+          this.showError(error, 'An error occurred while trying to register the delivery.');
+        },
+      });
   }
 
   updateStatus(newStatus: DeliveryStatus) {
     if (!this.deliveryResult) return;
 
     this.statusTransitionError = '';
+    this.statusBeingUpdated.set(newStatus);
 
     this.deliveryService
       .updateDeliveryStatus(this.deliveryResult.trackingCode, newStatus)
+      .pipe(finalize(() => this.statusBeingUpdated.set(null)))
       .subscribe({
-        next: (dadosAtualizados) => {
-          alert(`Status updated to ${newStatus} successfully!`);
-          this.deliveryResult = dadosAtualizados;
+        next: (updatedDelivery) => {
+          this.showNotification(`Status updated to ${newStatus} successfully!`);
+          this.deliveryResult = updatedDelivery;
         },
-        error: (error: HttpErrorResponse) => {
-          console.error('Error updating status:', error);
-
-          if (error.status === 409) {
-            this.statusTransitionError = this.getErrorMessage(error);
+        error: (error: unknown) => {
+          if (error instanceof HttpErrorResponse && error.status === 409) {
+            this.statusTransitionError = this.getErrorMessage(
+              error,
+              'This status transition is not allowed.',
+            );
             return;
           }
 
-          alert('An error occurred while trying to update the status.');
+          this.showError(error, 'An error occurred while trying to update the status.');
         },
       });
   }
 
-  private getErrorMessage(error: HttpErrorResponse): string {
-    const responseBody: unknown = error.error;
+  private showError(error: unknown, fallbackMessage: string): void {
+    this.showNotification(this.getErrorMessage(error, fallbackMessage));
+  }
 
-    if (isApiError(responseBody)) {
-      return responseBody.message;
+  private showNotification(message: string): void {
+    this.notificationService.show(message);
+  }
+
+  private getErrorMessage(error: unknown, fallbackMessage: string): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return fallbackMessage;
     }
 
-    return 'This status transition is not allowed.';
+    if (error.status === 0) {
+      return 'Unable to connect to the server. Please try again.';
+    }
+
+    if (isApiError(error.error)) {
+      return error.error.message;
+    }
+
+    return fallbackMessage;
   }
 }

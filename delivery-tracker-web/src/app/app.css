@@ -8,3 +8,10 @@
   margin-top: 16px;
   color: #616161;
 }
+
+.button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
