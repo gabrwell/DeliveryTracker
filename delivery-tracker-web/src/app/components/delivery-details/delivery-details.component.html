@@ -1,0 +1,68 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Status: {{ delivery().status }}</mat-card-title>
+    <mat-card-subtitle>Code: {{ delivery().trackingCode }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p><strong>Recipient:</strong> {{ delivery().recipient }}</p>
+
+    @if (statusTransitionError()) {
+      <p class="status-error" role="alert">{{ statusTransitionError() }}</p>
+    }
+
+    @if (delivery().status === 'DELIVERED' || delivery().status === 'CANCELED') {
+      <p class="final-status-message">This delivery has reached a final status.</p>
+    }
+  </mat-card-content>
+
+  @if (delivery().status === 'CREATED' || delivery().status === 'IN_TRANSIT') {
+    <mat-card-actions>
+      @if (delivery().status === 'CREATED') {
+        <button
+          mat-stroked-button
+          class="in-transit-button"
+          [disabled]="statusBeingUpdated() !== null"
+          (click)="requestStatusUpdate('IN_TRANSIT')"
+        >
+          <span class="button-content">
+            @if (statusBeingUpdated() === 'IN_TRANSIT') {
+              <mat-spinner diameter="18" />
+            }
+            In Transit
+          </span>
+        </button>
+      }
+
+      @if (delivery().status === 'IN_TRANSIT') {
+        <button
+          mat-flat-button
+          class="delivered-button"
+          [disabled]="statusBeingUpdated() !== null"
+          (click)="requestStatusUpdate('DELIVERED')"
+        >
+          <span class="button-content">
+            @if (statusBeingUpdated() === 'DELIVERED') {
+              <mat-spinner diameter="18" />
+            }
+            Delivered
+          </span>
+        </button>
+      }
+
+      <button
+        mat-stroked-button
+        color="warn"
+        [disabled]="statusBeingUpdated() !== null"
+        (click)="requestStatusUpdate('CANCELED')"
+      >
+        <span class="button-content">
+          @if (statusBeingUpdated() === 'CANCELED') {
+            <mat-spinner diameter="18" />
+          }
+          Cancel
+        </span>
+      </button>
+    </mat-card-actions>
+  }
+</mat-card>

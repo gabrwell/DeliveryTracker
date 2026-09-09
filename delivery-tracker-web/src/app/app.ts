@@ -1,15 +1,11 @@
 import { Component, signal } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 
+import { DeliveryCreateComponent } from './components/delivery-create/delivery-create.component';
+import { DeliveryDetailsComponent } from './components/delivery-details/delivery-details.component';
+import { DeliverySearchComponent } from './components/delivery-search/delivery-search.component';
 import { DeliveryService } from './services/delivery.services';
 import { NotificationService } from './services/notification.service';
 import { isApiError } from './models/api.model';
@@ -18,21 +14,15 @@ import { Delivery, DeliveryStatus } from './models/delivery.model';
 @Component({
   selector: 'app-root',
   imports: [
-    MatCardModule,
-    MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
     MatSnackBarModule,
-    FormsModule,
+    DeliverySearchComponent,
+    DeliveryCreateComponent,
+    DeliveryDetailsComponent,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('delivery-tracker-web');
-
   trackingCode = '';
   deliveryResult: Delivery | null = null;
   statusTransitionError = '';
@@ -47,8 +37,8 @@ export class App {
     private notificationService: NotificationService,
   ) {}
 
-  searchDelivery() {
-    if (!this.trackingCode.trim()) {
+  searchDelivery(trackingCode: string): void {
+    if (!trackingCode.trim()) {
       this.showNotification('Please enter a tracking code.');
       return;
     }
@@ -58,7 +48,7 @@ export class App {
     this.isSearching.set(true);
 
     this.deliveryService
-      .getDeliveryByCode(this.trackingCode)
+      .getDeliveryByCode(trackingCode)
       .pipe(finalize(() => this.isSearching.set(false)))
       .subscribe({
         next: (apiData) => {
@@ -70,8 +60,8 @@ export class App {
       });
   }
 
-  createNewDelivery() {
-    const recipientName = this.newRecipientName.trim();
+  createNewDelivery(requestedRecipientName: string): void {
+    const recipientName = requestedRecipientName.trim();
 
     if (!recipientName) {
       this.showNotification('Please enter the recipient name.');
@@ -96,7 +86,7 @@ export class App {
       });
   }
 
-  updateStatus(newStatus: DeliveryStatus) {
+  updateStatus(newStatus: DeliveryStatus): void {
     if (!this.deliveryResult) return;
 
     this.statusTransitionError = '';
