@@ -1,0 +1,28 @@
+:host,
+mat-card,
+.create-form,
+mat-form-field {
+  display: block;
+  width: 100%;
+}
+
+:host {
+  max-width: 400px;
+}
+
+mat-card-content {
+  margin-top: 15px;
+}
+
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}

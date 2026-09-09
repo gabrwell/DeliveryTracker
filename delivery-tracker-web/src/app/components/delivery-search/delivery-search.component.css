@@ -1,0 +1,10 @@
+:host,
+.search-form,
+mat-form-field {
+  display: block;
+  width: 100%;
+}
+
+:host {
+  max-width: 400px;
+}

@@ -1,0 +1,47 @@
+:host,
+mat-card {
+  display: block;
+  width: 100%;
+}
+
+:host {
+  max-width: 400px;
+}
+
+mat-card-content p:first-child {
+  margin-top: 15px;
+}
+
+mat-card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px;
+}
+
+.status-error {
+  margin-top: 16px;
+  color: #b3261e;
+  font-weight: 500;
+}
+
+.final-status-message {
+  margin-top: 16px;
+  color: #616161;
+}
+
+.button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.in-transit-button {
+  color: #ff9800;
+  border-color: #ff9800;
+}
+
+.delivered-button {
+  color: white;
+  background-color: #4caf50;
+}

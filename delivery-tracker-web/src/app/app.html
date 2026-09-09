@@ -1,135 +1,24 @@
-<div
-  style="
-    padding: 50px;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  "
->
+<main class="delivery-tracker">
   <h1>Delivery Tracker</h1>
 
-  <mat-form-field appearance="outline" style="width: 100%; max-width: 400px">
-    <mat-label>Tracking Code</mat-label>
-    <input matInput placeholder="Ex: BR123" [(ngModel)]="trackingCode" [disabled]="isSearching()" />
-    <button
-      mat-icon-button
-      matSuffix
-      aria-label="Search delivery"
-      [disabled]="isSearching()"
-      (click)="searchDelivery()"
-    >
-      @if (isSearching()) {
-        <mat-spinner diameter="22" aria-label="Searching delivery" />
-      } @else {
-        <mat-icon>search</mat-icon>
-      }
-    </button>
-  </mat-form-field>
+  <app-delivery-search
+    [(trackingCode)]="trackingCode"
+    [isSearching]="isSearching()"
+    (searchRequested)="searchDelivery($event)"
+  />
 
-  <mat-card style="width: 100%; max-width: 400px; margin-top: 20px">
-    <mat-card-header>
-      <mat-card-title>Register New Delivery</mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px">
-      <mat-form-field appearance="outline" style="width: 100%">
-        <mat-label>Recipient's Name</mat-label>
-        <input
-          matInput
-          placeholder="Ex: Gabriel"
-          [(ngModel)]="newRecipientName"
-          [disabled]="isCreating()"
-        />
-      </mat-form-field>
-
-      <button
-        mat-flat-button
-        style="background-color: #3f51b5; color: white"
-        [disabled]="isCreating()"
-        (click)="createNewDelivery()"
-      >
-        <span class="button-content">
-          @if (isCreating()) {
-            <mat-spinner diameter="20" />
-            Registering...
-          } @else {
-            Register Delivery
-          }
-        </span>
-      </button>
-    </mat-card-content>
-  </mat-card>
+  <app-delivery-create
+    [(recipientName)]="newRecipientName"
+    [isCreating]="isCreating()"
+    (createRequested)="createNewDelivery($event)"
+  />
 
   @if (deliveryResult) {
-    <mat-card style="width: 100%; max-width: 400px; margin-top: 20px">
-      <mat-card-header>
-        <mat-card-title>Status: {{ deliveryResult.status }}</mat-card-title>
-        <mat-card-subtitle>Code: {{ deliveryResult.trackingCode }}</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <p style="margin-top: 15px"><strong>Recipient:</strong> {{ deliveryResult.recipient }}</p>
-
-        @if (statusTransitionError) {
-          <p class="status-error" role="alert">{{ statusTransitionError }}</p>
-        }
-
-        @if (deliveryResult.status === 'DELIVERED' || deliveryResult.status === 'CANCELED') {
-          <p class="final-status-message">This delivery has reached a final status.</p>
-        }
-      </mat-card-content>
-
-      @if (deliveryResult.status === 'CREATED' || deliveryResult.status === 'IN_TRANSIT') {
-        <mat-card-actions style="display: flex; gap: 10px; padding: 16px">
-          @if (deliveryResult.status === 'CREATED') {
-            <button
-              mat-stroked-button
-              style="color: #ff9800; border-color: #ff9800"
-              [disabled]="statusBeingUpdated() !== null"
-              (click)="updateStatus('IN_TRANSIT')"
-            >
-              <span class="button-content">
-                @if (statusBeingUpdated() === 'IN_TRANSIT') {
-                  <mat-spinner diameter="18" />
-                }
-                In Transit
-              </span>
-            </button>
-          }
-
-          @if (deliveryResult.status === 'IN_TRANSIT') {
-            <button
-              mat-flat-button
-              style="background-color: #4caf50; color: white"
-              [disabled]="statusBeingUpdated() !== null"
-              (click)="updateStatus('DELIVERED')"
-            >
-              <span class="button-content">
-                @if (statusBeingUpdated() === 'DELIVERED') {
-                  <mat-spinner diameter="18" />
-                }
-                Delivered
-              </span>
-            </button>
-          }
-
-          <button
-            mat-stroked-button
-            color="warn"
-            [disabled]="statusBeingUpdated() !== null"
-            (click)="updateStatus('CANCELED')"
-          >
-            <span class="button-content">
-              @if (statusBeingUpdated() === 'CANCELED') {
-                <mat-spinner diameter="18" />
-              }
-              Cancel
-            </span>
-          </button>
-        </mat-card-actions>
-      }
-    </mat-card>
+    <app-delivery-details
+      [delivery]="deliveryResult"
+      [statusTransitionError]="statusTransitionError"
+      [statusBeingUpdated]="statusBeingUpdated()"
+      (statusUpdateRequested)="updateStatus($event)"
+    />
   }
-</div>
+</main>

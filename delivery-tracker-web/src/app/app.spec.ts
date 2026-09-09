@@ -73,7 +73,7 @@ describe('App', () => {
     app.trackingCode = 'ABC123';
     deliveryServiceMock.getDeliveryByCode.mockReturnValue(request.asObservable());
 
-    app.searchDelivery();
+    app.searchDelivery(app.trackingCode);
     fixture.detectChanges();
 
     const searchButton = fixture.nativeElement.querySelector(
@@ -98,7 +98,7 @@ describe('App', () => {
     app.newRecipientName = '  Gabriel  ';
     deliveryServiceMock.createDelivery.mockReturnValue(request.asObservable());
 
-    app.createNewDelivery();
+    app.createNewDelivery(app.newRecipientName);
 
     expect(app.isCreating()).toBe(true);
     expect(deliveryServiceMock.createDelivery).toHaveBeenCalledWith('Gabriel');
@@ -131,7 +131,7 @@ describe('App', () => {
       ),
     );
 
-    app.searchDelivery();
+    app.searchDelivery(app.trackingCode);
 
     expect(app.isSearching()).toBe(false);
     expect(app.deliveryResult).toBeNull();
@@ -146,7 +146,7 @@ describe('App', () => {
       throwError(() => new HttpErrorResponse({ status: 0 })),
     );
 
-    app.createNewDelivery();
+    app.createNewDelivery(app.newRecipientName);
 
     expect(app.isCreating()).toBe(false);
     expect(notificationServiceMock.show).toHaveBeenCalledWith(

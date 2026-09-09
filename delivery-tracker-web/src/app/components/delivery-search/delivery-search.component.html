@@ -1,0 +1,26 @@
+<form class="search-form" (ngSubmit)="requestSearch()">
+  <mat-form-field appearance="outline">
+    <mat-label>Tracking Code</mat-label>
+    <input
+      matInput
+      name="trackingCode"
+      placeholder="Ex: BR123"
+      [ngModel]="trackingCode()"
+      (ngModelChange)="updateTrackingCode($event)"
+      [disabled]="isSearching()"
+    />
+    <button
+      type="submit"
+      mat-icon-button
+      matSuffix
+      aria-label="Search delivery"
+      [disabled]="isSearching()"
+    >
+      @if (isSearching()) {
+        <mat-spinner diameter="22" aria-label="Searching delivery" />
+      } @else {
+        <mat-icon>search</mat-icon>
+      }
+    </button>
+  </mat-form-field>
+</form>

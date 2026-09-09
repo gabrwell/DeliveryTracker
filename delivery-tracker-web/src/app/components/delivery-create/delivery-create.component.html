@@ -1,0 +1,32 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Register New Delivery</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form class="create-form" (ngSubmit)="requestCreation()">
+      <mat-form-field appearance="outline">
+        <mat-label>Recipient's Name</mat-label>
+        <input
+          matInput
+          name="recipientName"
+          placeholder="Ex: Gabriel"
+          [ngModel]="recipientName()"
+          (ngModelChange)="updateRecipientName($event)"
+          [disabled]="isCreating()"
+        />
+      </mat-form-field>
+
+      <button type="submit" mat-flat-button [disabled]="isCreating()">
+        <span class="button-content">
+          @if (isCreating()) {
+            <mat-spinner diameter="20" aria-label="Registering delivery" />
+            Registering...
+          } @else {
+            Register Delivery
+          }
+        </span>
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>
