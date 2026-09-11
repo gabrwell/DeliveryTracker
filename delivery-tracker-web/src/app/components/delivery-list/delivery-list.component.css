@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  width: min(100%, 1000px);
+}
+
+.delivery-list-card {
+  overflow: hidden;
+}
+
+mat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+mat-card-content {
+  padding: 0;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.list-state {
+  min-height: 120px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e8eaf6;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 700px) {
+  th,
+  td {
+    white-space: nowrap;
+  }
+}

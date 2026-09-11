@@ -13,6 +13,8 @@
     (createRequested)="createNewDelivery($event)"
   />
 
+  <app-delivery-list (deliverySelected)="viewDelivery($event)" />
+
   @if (deliveryResult) {
     <app-delivery-details
       [delivery]="deliveryResult"
