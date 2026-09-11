@@ -1,0 +1,86 @@
+<mat-card class="delivery-list-card">
+  <mat-card-header>
+    <mat-card-title>Deliveries</mat-card-title>
+    <button
+      mat-button
+      type="button"
+      [disabled]="isLoading()"
+      (click)="loadDeliveries()"
+      aria-label="Refresh delivery list"
+    >
+      Refresh
+    </button>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (isLoading()) {
+      <div class="list-state" role="status" aria-live="polite">
+        <mat-spinner diameter="36" />
+        <span>Loading deliveries...</span>
+      </div>
+    } @else if (hasLoadError()) {
+      <div class="list-state" role="alert">
+        <p>We could not load the deliveries.</p>
+        <button mat-stroked-button type="button" (click)="loadDeliveries()">Try again</button>
+      </div>
+    } @else if (deliveries.length === 0) {
+      <p class="list-state">No deliveries registered yet.</p>
+    } @else {
+      <div class="table-container">
+        <table mat-table [dataSource]="deliveries">
+          <ng-container matColumnDef="trackingCode">
+            <th mat-header-cell *matHeaderCellDef>Tracking code</th>
+            <td mat-cell *matCellDef="let delivery">{{ delivery.trackingCode }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="recipient">
+            <th mat-header-cell *matHeaderCellDef>Recipient</th>
+            <td mat-cell *matCellDef="let delivery">{{ delivery.recipient }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let delivery">
+              <span class="status-badge">{{ delivery.status }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef>Created at</th>
+            <td mat-cell *matCellDef="let delivery">
+              {{ delivery.createdAt ? (delivery.createdAt | date: 'dd/MM/yyyy HH:mm') : '—' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let delivery">
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="selectDelivery(delivery.trackingCode)"
+                [attr.aria-label]="'View delivery ' + delivery.trackingCode"
+              >
+                View
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+    }
+  </mat-card-content>
+
+  <mat-paginator
+    [length]="totalElements"
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    [showFirstLastButtons]="true"
+    [disabled]="isLoading()"
+    (page)="onPageChange($event)"
+    aria-label="Select delivery page"
+  />
+</mat-card>

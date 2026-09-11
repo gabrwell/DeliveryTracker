@@ -5,6 +5,7 @@ import { finalize } from 'rxjs';
 
 import { DeliveryCreateComponent } from './components/delivery-create/delivery-create.component';
 import { DeliveryDetailsComponent } from './components/delivery-details/delivery-details.component';
+import { DeliveryListComponent } from './components/delivery-list/delivery-list.component';
 import { DeliverySearchComponent } from './components/delivery-search/delivery-search.component';
 import { DeliveryService } from './services/delivery.services';
 import { NotificationService } from './services/notification.service';
@@ -18,6 +19,7 @@ import { Delivery, DeliveryStatus } from './models/delivery.model';
     DeliverySearchComponent,
     DeliveryCreateComponent,
     DeliveryDetailsComponent,
+    DeliveryListComponent,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',
@@ -58,6 +60,11 @@ export class App {
           this.showError(error, 'An error occurred while searching for the delivery.');
         },
       });
+  }
+
+  viewDelivery(trackingCode: string): void {
+    this.trackingCode = trackingCode;
+    this.searchDelivery(trackingCode);
   }
 
   createNewDelivery(requestedRecipientName: string): void {

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Subject, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { App } from './app';
 import { Delivery, DeliveryStatus } from './models/delivery.model';
 import { DeliveryService } from './services/delivery.services';
@@ -11,6 +11,7 @@ describe('App', () => {
     getDeliveryByCode: ReturnType<typeof vi.fn>;
     createDelivery: ReturnType<typeof vi.fn>;
     updateDeliveryStatus: ReturnType<typeof vi.fn>;
+    getAllDeliveries: ReturnType<typeof vi.fn>;
   };
   let notificationServiceMock: {
     show: ReturnType<typeof vi.fn>;
@@ -21,6 +22,19 @@ describe('App', () => {
       getDeliveryByCode: vi.fn(),
       createDelivery: vi.fn(),
       updateDeliveryStatus: vi.fn(),
+      getAllDeliveries: vi.fn().mockReturnValue(
+        of({
+          content: [],
+          empty: true,
+          first: true,
+          last: true,
+          number: 0,
+          numberOfElements: 0,
+          size: 10,
+          totalElements: 0,
+          totalPages: 0,
+        }),
+      ),
     };
     notificationServiceMock = {
       show: vi.fn(),
