@@ -25,6 +25,11 @@ class DeliveryTest {
 
         assertEquals(DeliveryStatus.CREATED, delivery.getStatus());
         assertNull(delivery.getDeliveredAt());
+        assertEquals(1, delivery.getStatusHistory().size());
+        assertNull(delivery.getStatusHistory().get(0).getPreviousStatus());
+        assertEquals(
+                DeliveryStatus.CREATED,
+                delivery.getStatusHistory().get(0).getNewStatus());
     }
 
     @ParameterizedTest
@@ -36,6 +41,10 @@ class DeliveryTest {
 
         assertTrue(changed);
         assertEquals(requestedStatus, delivery.getStatus());
+        DeliveryStatusHistory latestHistory = delivery.getStatusHistory()
+                .get(delivery.getStatusHistory().size() - 1);
+        assertEquals(currentStatus, latestHistory.getPreviousStatus());
+        assertEquals(requestedStatus, latestHistory.getNewStatus());
     }
 
     @Test
@@ -52,24 +61,28 @@ class DeliveryTest {
     void shouldBeIdempotentWhenStatusDoesNotChange(DeliveryStatus status) {
         Delivery delivery = deliveryWithStatus(status);
         LocalDateTime originalDeliveredAt = delivery.getDeliveredAt();
+        int originalHistorySize = delivery.getStatusHistory().size();
 
         boolean changed = delivery.changeStatus(status);
 
         assertFalse(changed);
         assertEquals(status, delivery.getStatus());
         assertSame(originalDeliveredAt, delivery.getDeliveredAt());
+        assertEquals(originalHistorySize, delivery.getStatusHistory().size());
     }
 
     @ParameterizedTest
     @MethodSource("invalidTransitions")
     void shouldRejectInvalidStatusTransitions(DeliveryStatus currentStatus, DeliveryStatus requestedStatus) {
         Delivery delivery = deliveryWithStatus(currentStatus);
+        int originalHistorySize = delivery.getStatusHistory().size();
 
         InvalidStatusTransitionException exception = assertThrows(
                 InvalidStatusTransitionException.class,
                 () -> delivery.changeStatus(requestedStatus));
 
         assertEquals(currentStatus, delivery.getStatus());
+        assertEquals(originalHistorySize, delivery.getStatusHistory().size());
         assertEquals(
                 "Cannot change delivery status from " + currentStatus + " to " + requestedStatus + ".",
                 exception.getMessage());

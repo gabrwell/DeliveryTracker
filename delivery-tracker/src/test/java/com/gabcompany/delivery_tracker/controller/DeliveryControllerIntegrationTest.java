@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,5 +62,24 @@ class DeliveryControllerIntegrationTest {
 
         Delivery unchangedDelivery = deliveryRepository.findByTrackingCode("ABC123").orElseThrow();
         assertEquals(DeliveryStatus.CREATED, unchangedDelivery.getStatus());
+    }
+
+    @Test
+    void shouldReturnDeliveryStatusHistoryInChronologicalOrder() throws Exception {
+        deliveryRepository.save(new Delivery("ABC123", "GABRIEL"));
+
+        mockMvc.perform(patch("/deliveries/ABC123/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"IN_TRANSIT\"}"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/deliveries/ABC123/history"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].newStatus").value("CREATED"))
+                .andExpect(jsonPath("$[0].changedAt").isNotEmpty())
+                .andExpect(jsonPath("$[1].previousStatus").value("CREATED"))
+                .andExpect(jsonPath("$[1].newStatus").value("IN_TRANSIT"))
+                .andExpect(jsonPath("$[1].changedAt").isNotEmpty());
     }
 }

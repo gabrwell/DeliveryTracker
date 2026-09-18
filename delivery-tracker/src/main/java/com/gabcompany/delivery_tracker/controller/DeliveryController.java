@@ -7,6 +7,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.gabcompany.delivery_tracker.dto.DeliveryRequestDTO;
 import com.gabcompany.delivery_tracker.dto.DeliveryResponseDTO;
 import com.gabcompany.delivery_tracker.dto.DeliveryStatusDTO;
+import com.gabcompany.delivery_tracker.dto.DeliveryStatusHistoryResponseDTO;
 import com.gabcompany.delivery_tracker.model.Delivery;
 import com.gabcompany.delivery_tracker.service.DeliveryService;
 import jakarta.validation.Valid;
@@ -15,6 +16,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/deliveries")
@@ -39,7 +42,18 @@ public class DeliveryController {
 
         dto.add(linkTo(methodOn(DeliveryController.class).getAllDeliveries(null)).withRel("all_deliveries"));
 
+        dto.add(linkTo(methodOn(DeliveryController.class).getDeliveryStatusHistory(trackingCode))
+                .withRel("status_history"));
+
         return dto;
+    }
+
+    @GetMapping("/{trackingCode}/history")
+    public List<DeliveryStatusHistoryResponseDTO> getDeliveryStatusHistory(
+            @PathVariable String trackingCode) {
+        return deliveryService.getDeliveryStatusHistory(trackingCode).stream()
+                .map(DeliveryStatusHistoryResponseDTO::new)
+                .toList();
     }
 
     @PatchMapping("/{trackingCode}/status")
