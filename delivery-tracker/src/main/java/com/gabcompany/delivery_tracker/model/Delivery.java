@@ -7,6 +7,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -29,6 +32,10 @@ public class Delivery {
     @Column(name = "delivered_at")
     private LocalDateTime deliveredAt;
 
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("changedAt ASC, id ASC")
+    private List<DeliveryStatusHistory> statusHistory = new ArrayList<>();
+
 
     protected Delivery() {
 
@@ -38,6 +45,7 @@ public class Delivery {
         this.trackingCode = trackingCode;
         this.recipient = recipient;
         this.status = DeliveryStatus.CREATED;
+        addStatusHistory(null, DeliveryStatus.CREATED);
     }
 
     @CreatedDate
@@ -105,7 +113,10 @@ public class Delivery {
             throw new InvalidStatusTransitionException(status, newStatus);
         }
 
+        DeliveryStatus previousStatus = status;
         status = newStatus;
+        addStatusHistory(previousStatus, newStatus);
+
         if (newStatus == DeliveryStatus.DELIVERED) {
             deliveredAt = LocalDateTime.now();
         }
@@ -125,6 +136,14 @@ public class Delivery {
 
     public LocalDateTime getDeliveredAt() {
         return deliveredAt;
+    }
+
+    public List<DeliveryStatusHistory> getStatusHistory() {
+        return Collections.unmodifiableList(statusHistory);
+    }
+
+    private void addStatusHistory(DeliveryStatus previousStatus, DeliveryStatus newStatus) {
+        statusHistory.add(new DeliveryStatusHistory(this, previousStatus, newStatus));
     }
 
 }

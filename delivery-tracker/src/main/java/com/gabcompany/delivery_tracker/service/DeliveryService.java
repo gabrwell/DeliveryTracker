@@ -4,11 +4,14 @@ import com.gabcompany.delivery_tracker.exception.DeliveryNotFoundException;
 import com.gabcompany.delivery_tracker.exception.InvalidDeliveryStatusException;
 import com.gabcompany.delivery_tracker.model.Delivery;
 import com.gabcompany.delivery_tracker.model.DeliveryStatus;
+import com.gabcompany.delivery_tracker.model.DeliveryStatusHistory;
 import com.gabcompany.delivery_tracker.repository.DeliveryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -42,7 +45,14 @@ public class DeliveryService {
                         "Delivery not found with tracking code: " + trackingCode));
     }
 
+    @Transactional(readOnly = true)
+    public List<DeliveryStatusHistory> getDeliveryStatusHistory(String trackingCode) {
+        Delivery delivery = getDeliveryByTrackingCode(trackingCode);
+        return List.copyOf(delivery.getStatusHistory());
+    }
 
+
+    @Transactional
     public Delivery updateDeliveryStatus(String trackingCode, String newStatus) {
         Delivery delivery = getDeliveryByTrackingCode(trackingCode);
         DeliveryStatus statusEnum = parseStatus(newStatus);
