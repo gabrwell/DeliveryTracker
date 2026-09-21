@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.stream.Collectors;
 
@@ -22,6 +23,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidDeliveryStatusException.class)
     public ResponseEntity<StandardError> handleInvalidDeliveryStatus(InvalidDeliveryStatusException ex) {
         StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(InvalidDeliveryFilterException.class)
+    public ResponseEntity<StandardError> handleInvalidDeliveryFilter(
+            InvalidDeliveryFilterException ex) {
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<StandardError> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex) {
+        String message = "Invalid value for parameter '" + ex.getName() + "': '"
+                + ex.getValue() + "'.";
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), message);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
