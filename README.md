@@ -1,13 +1,22 @@
 # Delivery Tracker
 
-Aplicação full-stack para cadastrar entregas, consultar códigos de rastreio e atualizar o status dos pedidos.
+API REST backend-first para cadastrar entregas, consultar códigos de rastreio, controlar transições de status e manter o histórico de cada pedido. O frontend Angular funciona como cliente demonstrativo da API.
 
 ## Funcionalidades
 
 - Cadastro de entregas com código de rastreio automático.
 - Consulta de entregas pelo código.
-- Atualização do status para `IN_TRANSIT` e `DELIVERED`.
+- Atualização controlada entre os status `CREATED`, `IN_TRANSIT`, `DELIVERED` e `CANCELED`.
+- Histórico persistido de todas as mudanças de status.
 - Validação de dados e respostas de erro padronizadas.
+
+## Principais endpoints
+
+- `POST /deliveries`: cadastra uma entrega.
+- `GET /deliveries`: lista entregas com paginação.
+- `GET /deliveries/{trackingCode}`: consulta uma entrega.
+- `PATCH /deliveries/{trackingCode}/status`: atualiza o status.
+- `GET /deliveries/{trackingCode}/history`: consulta o histórico de status em ordem cronológica.
 
 ## Tecnologias
 
