@@ -13,10 +13,17 @@ API REST backend-first para cadastrar entregas, consultar códigos de rastreio, 
 ## Principais endpoints
 
 - `POST /deliveries`: cadastra uma entrega.
-- `GET /deliveries`: lista entregas com paginação.
+- `GET /deliveries`: lista entregas com paginação e filtros opcionais por `status`,
+  `recipient`, `createdFrom` e `createdTo`.
 - `GET /deliveries/{trackingCode}`: consulta uma entrega.
 - `PATCH /deliveries/{trackingCode}/status`: atualiza o status.
 - `GET /deliveries/{trackingCode}/history`: consulta o histórico de status em ordem cronológica.
+
+Exemplo de listagem filtrada:
+
+```http
+GET /deliveries?status=IN_TRANSIT&recipient=Gabriel&page=0&size=10&sort=trackingCode,asc
+```
 
 ## Tecnologias
 

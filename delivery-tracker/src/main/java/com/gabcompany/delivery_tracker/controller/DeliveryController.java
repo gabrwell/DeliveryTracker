@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
+import com.gabcompany.delivery_tracker.dto.DeliveryFilter;
 import com.gabcompany.delivery_tracker.dto.DeliveryRequestDTO;
 import com.gabcompany.delivery_tracker.dto.DeliveryResponseDTO;
 import com.gabcompany.delivery_tracker.dto.DeliveryStatusDTO;
@@ -13,11 +14,13 @@ import com.gabcompany.delivery_tracker.service.DeliveryService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/deliveries")
@@ -40,7 +43,9 @@ public class DeliveryController {
 
         dto.add(linkTo(methodOn(DeliveryController.class).getDeliveryByCode(trackingCode)).withSelfRel());
 
-        dto.add(linkTo(methodOn(DeliveryController.class).getAllDeliveries(null)).withRel("all_deliveries"));
+        dto.add(linkTo(methodOn(DeliveryController.class)
+                .getAllDeliveries(null, null, null, null, null))
+                .withRel("all_deliveries"));
 
         dto.add(linkTo(methodOn(DeliveryController.class).getDeliveryStatusHistory(trackingCode))
                 .withRel("status_history"));
@@ -72,9 +77,18 @@ public class DeliveryController {
     }
 
     @GetMapping
-    public Page<DeliveryResponseDTO> getAllDeliveries(@PageableDefault(size = 10, page = 0, sort = "trackingCode") Pageable pageable) {
+    public Page<DeliveryResponseDTO> getAllDeliveries(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String recipient,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createdFrom,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createdTo,
+            @PageableDefault(size = 10, page = 0, sort = "trackingCode") Pageable pageable) {
 
-        Page<Delivery> deliveriesPage = deliveryService.getAllDeliveries(pageable);
+        DeliveryFilter filter = new DeliveryFilter(status, recipient, createdFrom, createdTo);
+
+        Page<Delivery> deliveriesPage = deliveryService.getAllDeliveries(filter, pageable);
 
         return deliveriesPage.map(DeliveryResponseDTO::new);
     }
