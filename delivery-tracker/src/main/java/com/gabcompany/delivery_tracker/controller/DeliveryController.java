@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/deliveries")
-@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
